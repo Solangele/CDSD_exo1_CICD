@@ -1,31 +1,26 @@
-name: Python Testing CI
-
-on: [push, pull_request]
+name: Tests
+on:
+  - push
+  - pull_request
 
 jobs:
-  test-api:
+  test:
+    name: Tests unitaires
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout du code
+        uses: actions/checkout@v6
 
-      - name: Set up Python 3.11.9
-        uses: actions/setup-python@v5
+      - name: Configuration python 3.11.9
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.11.9'
+          python-version: '3.11.9' 
 
-
-      - name: Install dependencies
+      - name : Installation des dépendances
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install joblib scikit-learn  # On s'assure qu'ils sont là pour le script suivant
 
-      - name: Create dummy model file
-        run: |
-          python -c "import joblib; from sklearn.ensemble import RandomForestClassifier; import numpy as np; model = RandomForestClassifier().fit([[0,0,0,0]], [1]); joblib.dump(model, 'model.joblib')"
-          ls -lh model.joblib  # Vérification visuelle dans les logs GitHub
-
-      - name: Run tests with pytest
-        run: pytest test_app_satisfaction.py
+      - name : Exécution des tests
+        run: pytest -v
