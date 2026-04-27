@@ -1,0 +1,13 @@
+name: Hello CI/CD
+
+on: [push]
+
+jobs:
+  hello-job:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Message de bienvenue
+        run: echo "Bienvenue dans la CI/CD pour l'API de satisfaction !"
+
+      - name: Affichage de la date et l'heure
+        run: date
