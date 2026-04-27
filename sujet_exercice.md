@@ -24,3 +24,15 @@ exercices/api_prediction/
    - Se déclenche sur chaque push
    - Affiche "Bienvenue dans la CI/CD pour l'API de satisfaction !"
    - Affiche la date et l'heure du déclenchement
+
+
+### **Exercice 2 : Workflow de test automatique**
+Objectif : Automatiser l'exécution des tests à chaque push
+
+Consignes :
+
+1. Créer un workflow `02_test.yml` qui :
+   - Se déclenche sur push et pull request
+   - Configure Python 3.11.9
+   - Installe les dépendances
+   - Exécute les tests avec pytest
