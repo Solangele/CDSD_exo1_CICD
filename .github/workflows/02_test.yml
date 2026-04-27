@@ -24,6 +24,6 @@ jobs:
       - name: Create dummy model for testing
         run: |
           python -c "import joblib; from sklearn.ensemble import RandomForestClassifier; import numpy as np; model = RandomForestClassifier().fit([[0,0,0,0]], [1]); joblib.dump(model, 'model.joblib')"
-          
+
       - name: Run tests with pytest
         run: pytest test_app_satisfaction.py
