@@ -8,6 +8,7 @@ Cette API permet de :
 - Consulter l'historique des prédictions
 """
 
+# ajout de commentaires pour essayer le pull request
 from flask import Flask, request, jsonify
 import pickle
 import numpy as np
