@@ -1,58 +1,59 @@
-name: Python Testing CI
-
-on: [push, pull_request]
+name: Tests
+on:
+  - push
+  - pull_request
 
 jobs:
-  test-api:
-    name: Tests unitaires et Couverture
+  test:
+    name: Tests unitaires
     runs-on: ubuntu-latest
-
+    outputs:
+      coverage: ${{ steps.coverage.outputs.percentage }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout du code
+        uses: actions/checkout@v6
 
-      - name: Set up Python 3.11.9
-        uses: actions/setup-python@v5
+      - name: Configuration python 3.11.9
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.11.9'
+          python-version: '3.11.9' 
 
-      - name: Install dependencies
+      - name : Installation des dépendances
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest-cov  # Nécessaire pour la couverture
 
-      - name: Create dummy model for testing
+      - name : Exécution des tests
+        run: pytest --cov=. --cov-report=html --cov-report=term --cov-report=json
+
+      - name: Extraction du pourcentage
+        id: coverage
         run: |
-          python -c "import joblib; from sklearn.ensemble import RandomForestClassifier; import numpy as np; model = RandomForestClassifier().fit([[0,0,0,0]], [1]); joblib.dump(model, 'model.joblib')"
+          COVERAGE=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
+          echo "percentage=$COVERAGE%" >> $GITHUB_OUTPUT
 
-      - name: Run tests with pytest and coverage
-        run: |
-          pytest --cov=. --cov-report=html --cov-report=term > coverage.txt
-          cat coverage.txt
-
-      - name: Extract coverage percentage (Bonus)
-        id: coverage_percent
-        run: |
-          # Extrait le pourcentage TOTAL du rapport texte
-          PERCENT=$(grep "TOTAL" coverage.txt | awk '{print $NF}')
-          echo "percent=$PERCENT" >> $GITHUB_OUTPUT
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+      - name: Upload du rapport de couverture
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: htmlcov/
-
+  
   report:
-    name: Rapport de fin
-    needs: test-api
+    name: Rapport de tests
     runs-on: ubuntu-latest
+    needs: test
+
     steps:
-      - name: Display Success Message
+      - name: Affichage du resultat
         run: |
-          echo "Le pipeline de test est terminé avec succès !"
-          echo "Le rapport de couverture est disponible dans les artéfacts du workflow."
+          echo "Couverture de code : ${{ needs.test.outputs.coverage }}"
+      
+      - name: Récupérer l'artéfact
+        uses: actions/download-artifact@v8
+        with:
+          name: coverage-report
+      - name: Lister les fichier
+        run: ls
 
 # name: Tests
 # on:
