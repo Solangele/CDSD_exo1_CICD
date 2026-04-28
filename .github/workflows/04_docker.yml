@@ -37,7 +37,7 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Build and push
@@ -46,4 +46,4 @@ jobs:
           context: .
           push: true
           # Remplacez 'mon-api-ml' par le nom de votre choix
-          tags: ${{ secrets.DOCKER_USERNAME }}/api-satisfaction:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/api-satisfaction:latest
